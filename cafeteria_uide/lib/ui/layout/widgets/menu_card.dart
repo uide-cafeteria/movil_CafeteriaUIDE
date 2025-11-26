@@ -4,7 +4,7 @@ import 'menu_item.dart';
 class MenuCard extends StatelessWidget {
   final MenuItem item;
 
-  const MenuCard({Key? key, required this.item}) : super(key: key);
+  const MenuCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

@@ -14,6 +14,7 @@ class HeaderBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Logo y nombre
           Row(
             children: const [
               Icon(Icons.restaurant_menu, color: Colors.black),
@@ -24,10 +25,10 @@ class HeaderBar extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
-              )
+              ),
             ],
           ),
-          const Icon(Icons.shopping_cart_outlined)
+          const Icon(Icons.local_cafe_outlined),
         ],
       ),
     );

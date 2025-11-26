@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'config/app_theme.dart';
-import 'routes/app_routes.dart';
+import 'ui/pages/main_screen.dart';
 
 void main() {
   runApp(const CafeteriaApp());
 }
 
 class CafeteriaApp extends StatelessWidget {
-  const CafeteriaApp({Key? key}) : super(key: key);
+  const CafeteriaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'La Cafetería',
+      title: 'Cafetería Universitaria',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.home,
-      routes: AppRoutes.routes,
+      home: const MainScreen(),
     );
   }
 }
