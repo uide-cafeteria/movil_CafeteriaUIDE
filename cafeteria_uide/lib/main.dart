@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'config/app_theme.dart';
-import 'ui/pages/main_screen.dart';
+import 'routes/app_routes.dart';
 
 void main() {
   runApp(const CafeteriaApp());
@@ -15,7 +15,10 @@ class CafeteriaApp extends StatelessWidget {
       title: 'Cafetería Universitaria',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainScreen(),
+
+      // Ahora usamos rutas
+      initialRoute: AppRoutes.initialRoute,
+      routes: AppRoutes.routes,
     );
   }
 }
