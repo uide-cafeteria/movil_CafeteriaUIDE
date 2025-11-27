@@ -30,6 +30,60 @@ class CafeteriaService {
       startDate: DateTime.now(),
       endDate: DateTime.now().add(const Duration(days: 14)),
     ),
+    Promotion(
+      id: '3',
+      title: 'DESAYUNO EJECUTIVO',
+      description: 'Café + sándwich + jugo natural',
+      image: 'assets/images/promo_desayuno.jpg',
+      discountPercentage: 35,
+      startDate: DateTime.now().subtract(const Duration(days: 1)),
+      endDate: DateTime.now().add(const Duration(days: 3)),
+    ),
+    Promotion(
+      id: '4',
+      title: 'CAFÉ AMERICANO XL',
+      description: '400ml + galleta gratis',
+      image: 'assets/images/promo_cafe_grande.jpg',
+      discountPercentage: 40,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(days: 4)),
+    ),
+    Promotion(
+      id: '5',
+      title: 'JUGOS 2x1',
+      description: 'Cualquier combinación de jugos',
+      image: 'assets/images/promo_jugos.jpg',
+      discountPercentage: 50,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(days: 2)),
+    ),
+    Promotion(
+      id: '6',
+      title: 'POSTRE DEL DÍA',
+      description: 'Cheesecake o brownie + café',
+      image: 'assets/images/promo_postre.jpg',
+      discountPercentage: 35,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(days: 1)),
+    ),
+    Promotion(
+      id: '7',
+      title: 'BURGER + PAPAS',
+      description: 'Doble carne + cheddar + papas',
+      image: 'assets/images/promo_burger.jpg',
+      discountPercentage: 25,
+      startDate: DateTime.now().subtract(const Duration(days: 2)),
+      endDate: DateTime.now().add(const Duration(days: 4)),
+    ),
+    Promotion(
+      id: '8',
+      title: 'HAPPY HOUR',
+      description: '2x1 en todos los cafés después de 3pm',
+      image: 'assets/images/promo_happy_hour.jpg',
+      discountPercentage: 50,
+      startDate: DateTime.now(),
+      endDate: DateTime.now().add(const Duration(days: 1)),
+    ),
   ];
 
   // Menús por día de la semana
@@ -49,6 +103,20 @@ class CafeteriaService {
         price: 2.00,
         isMain: false,
       ),
+      Dish(
+        title: 'Jugo de Naranja',
+        description: 'Jugo natural recién exprimido',
+        image: 'assets/images/jugo_naranja.jpg',
+        price: 1.20,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Café Americano',
+        description: 'Café de la casa recién molido',
+        image: 'assets/images/cafe_americano.jpg',
+        price: 1.00,
+        isMain: false,
+      ),
     ],
     DayOfWeek.martes: [
       Dish(
@@ -63,6 +131,20 @@ class CafeteriaService {
         description: 'Lechuga, crutones, parmesano y aderezo césar',
         image: 'assets/images/ensalada.jpg',
         price: 2.50,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Sopa de Lentejas',
+        description: 'Sopa nutritiva con lentejas y chorizo',
+        image: 'assets/images/sopa_lentejas.jpg',
+        price: 2.20,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Agua de Hierbaluisa',
+        description: 'Agua aromática refrescante',
+        image: 'assets/images/agua_hierbaluisa.jpg',
+        price: 1.00,
         isMain: false,
       ),
     ],
@@ -81,6 +163,20 @@ class CafeteriaService {
         price: 1.50,
         isMain: false,
       ),
+      Dish(
+        title: 'Ensalada Mixta',
+        description: 'Tomate, cebolla, pepino y zanahoria',
+        image: 'assets/images/ensalada_mixta.jpg',
+        price: 1.80,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Té de Manzanilla',
+        description: 'Té relajante natural',
+        image: 'assets/images/te_manzanilla.jpg',
+        price: 1.00,
+        isMain: false,
+      ),
     ],
     DayOfWeek.jueves: [
       Dish(
@@ -95,6 +191,20 @@ class CafeteriaService {
         description: 'Carne de res, queso cheddar, lechuga y salsa especial',
         image: 'assets/images/hamburguesa.jpg',
         price: 5.75,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Papas Fritas',
+        description: 'Papas crujientes con sal',
+        image: 'assets/images/papas_fritas.jpg',
+        price: 1.50,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Gaseosa',
+        description: 'Coca Cola o Sprite helada',
+        image: 'assets/images/gaseosa.jpg',
+        price: 1.20,
         isMain: false,
       ),
     ],
@@ -113,6 +223,20 @@ class CafeteriaService {
         price: 3.50,
         isMain: false,
       ),
+      Dish(
+        title: 'Arroz con Menestra',
+        description: 'Arroz con lentejas y carne',
+        image: 'assets/images/arroz_menestra.jpg',
+        price: 3.80,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Limonada',
+        description: 'Limonada casera refrescante',
+        image: 'assets/images/limonada.jpg',
+        price: 1.20,
+        isMain: false,
+      ),
     ],
     DayOfWeek.sabado: [
       Dish(
@@ -122,8 +246,58 @@ class CafeteriaService {
         price: 5.00,
         isMain: true,
       ),
+      Dish(
+        title: 'Sándwich de Jamón y Queso',
+        description: 'Sándwich caliente con jamón y queso derretido',
+        image: 'assets/images/sandwich_jamon.jpg',
+        price: 2.50,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Yogurt con Granola',
+        description: 'Yogurt natural con granola y frutas',
+        image: 'assets/images/yogurt_granola.jpg',
+        price: 2.00,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Jugo de Piña',
+        description: 'Jugo de piña colada natural',
+        image: 'assets/images/jugo_pina.jpg',
+        price: 1.50,
+        isMain: false,
+      ),
     ],
-    DayOfWeek.domingo: [], // Cerrado los domingos
+    DayOfWeek.domingo: [
+      Dish(
+        title: 'Fritada Especial',
+        description: 'Fritada de chancho con mote y sarza',
+        image: 'assets/images/fritada.jpg',
+        price: 5.50,
+        isMain: true,
+      ),
+      Dish(
+        title: 'Humita',
+        description: 'Humita fresca envuelta en hoja de maíz',
+        image: 'assets/images/humita.jpg',
+        price: 2.50,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Locro de Papa',
+        description: 'Locro ecuatoriano con queso y aguacate',
+        image: 'assets/images/locro_papa.jpg',
+        price: 3.00,
+        isMain: false,
+      ),
+      Dish(
+        title: 'Morocho',
+        description: 'Bebida tradicional de maíz',
+        image: 'assets/images/morocho.jpg',
+        price: 1.20,
+        isMain: false,
+      ),
+    ],
   };
 
   // Obtener promociones activas
@@ -175,3 +349,5 @@ class CafeteriaService {
     return DayOfWeek.values.map((day) => getMenuForDay(day)).toList();
   }
 }
+
+// ddaa
