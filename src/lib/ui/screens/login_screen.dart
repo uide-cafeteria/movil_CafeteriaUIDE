@@ -1,3 +1,4 @@
+import 'package:cafeteria_uide/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import '/utils/validators.dart';
 
@@ -11,44 +12,47 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
-  final _passwordCtrl = TextEditingController();        // AÑADIDO
+  final _passwordCtrl = TextEditingController(); // AÑADIDO
   bool _loading = false;
-  bool _obscurePassword = true;                          // AÑADIDO
+  bool _obscurePassword = true; // AÑADIDO
+
+  final AuthService authService = AuthService();
 
   void _loginWithEmail() async {
     if (!_formKey.currentState!.validate()) return;
 
     final email = _emailCtrl.text.trim();
-
-    // (Opcional) Validación simple: solo correos de la UIDE
-    if (!email.endsWith("@uide.edu.ec")) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Solo se permiten correos institucionales @uide.edu.ec'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
+    final password = _passwordCtrl.text;
 
     setState(() => _loading = true);
 
-    // Simulación de autenticación
-    await Future.delayed(const Duration(seconds: 1));
+    final result = await authService.login(email, password);
 
     setState(() => _loading = false);
 
-    // TODO: Guardar sesión luego con secureStorage
-
-    // Ir al Home
-    Navigator.pushReplacementNamed(context, '/home');
+    if (result['success']) {
+      // Login exitoso
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('¡Bienvenido!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      // Error del servidor o credenciales
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Credenciales incorrectas'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 
   void _loginWithGoogle() {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Login con Google próximamente'),
-      ),
+      const SnackBar(content: Text('Login con Google próximamente')),
     );
   }
 
@@ -62,11 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFF5E6D3),
-              Color(0xFFEDE0D4),
-              Color(0xFFE6D5C3),
-            ],
+            colors: [Color(0xFFF5E6D3), Color(0xFFEDE0D4), Color(0xFFE6D5C3)],
           ),
         ),
         child: SafeArea(
@@ -105,9 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
             color: const Color(0xFFF5E6D3),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: CustomPaint(
-            painter: CafeteriaLogoPainter(),
-          ),
+          child: CustomPaint(painter: CafeteriaLogoPainter()),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -210,12 +208,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
             Row(
               children: [
-                Expanded(child: Container(height: 1, color: const Color(0xFFE0E0E0))),
+                Expanded(
+                  child: Container(height: 1, color: const Color(0xFFE0E0E0)),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('o', style: TextStyle(fontSize: 14, color: Color(0xFF9E9E9E))),
+                  child: Text(
+                    'o',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF9E9E9E)),
+                  ),
                 ),
-                Expanded(child: Container(height: 1, color: const Color(0xFFE0E0E0))),
+                Expanded(
+                  child: Container(height: 1, color: const Color(0xFFE0E0E0)),
+                ),
               ],
             ),
 
@@ -240,12 +245,25 @@ class _LoginScreenState extends State<LoginScreen> {
               validator: Validators.emailValidator,
               decoration: InputDecoration(
                 hintText: 'correo@correo.com',
-                hintStyle: const TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
-                prefixIcon: const Icon(Icons.mail_outline, color: Color(0xFF9E9E9E), size: 20),
+                hintStyle: const TextStyle(
+                  color: Color(0xFFBDBDBD),
+                  fontSize: 14,
+                ),
+                prefixIcon: const Icon(
+                  Icons.mail_outline,
+                  color: Color(0xFF9E9E9E),
+                  size: 20,
+                ),
                 filled: true,
                 fillColor: const Color(0xFFF5F5F5),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
             ),
 
@@ -267,22 +285,38 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordCtrl,
               obscureText: _obscurePassword,
               validator: (value) {
-                if (value == null || value.isEmpty) return 'Ingresa tu contraseña';
-                if (value.length < 6) return 'Mínimo 6 caracteres';
+                if (value == null || value.isEmpty)
+                  return 'Ingresa tu contraseña';
                 return null;
               },
               decoration: InputDecoration(
                 hintText: '••••••••',
-                hintStyle: const TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
-                prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF9E9E9E), size: 20),
+                hintStyle: const TextStyle(
+                  color: Color(0xFFBDBDBD),
+                  fontSize: 14,
+                ),
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: Color(0xFF9E9E9E),
+                  size: 20,
+                ),
                 suffixIcon: IconButton(
-                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                  ),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
                 filled: true,
                 fillColor: const Color(0xFFF5F5F5),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
             ),
 
@@ -297,12 +331,27 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: const Color(0xFFE8A54B),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 0,
                 ),
                 child: _loading
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                    : const Text('Continuar con correo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Text(
+                        'Continuar con correo',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
               ),
             ),
 
@@ -314,8 +363,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 text: const TextSpan(
                   style: TextStyle(fontSize: 14),
                   children: [
-                    TextSpan(text: '¿No tienes cuenta? ', style: TextStyle(color: Color(0xFF2196F3))),
-                    TextSpan(text: 'Regístrate', style: TextStyle(color: Color(0xFF2196F3), fontWeight: FontWeight.w600)),
+                    TextSpan(
+                      text: '¿No tienes cuenta? ',
+                      style: TextStyle(color: Color(0xFF2196F3)),
+                    ),
+                    TextSpan(
+                      text: 'Regístrate',
+                      style: TextStyle(
+                        color: Color(0xFF2196F3),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -323,7 +381,42 @@ class _LoginScreenState extends State<LoginScreen> {
 
             TextButton(
               onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
-              child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 14, color: Color(0xFF757575))),
+              child: const Text(
+                '¿Olvidaste tu contraseña?',
+                style: TextStyle(fontSize: 14, color: Color(0xFF757575)),
+              ),
+            ),
+
+            //Powered by
+            const SizedBox(height: 20), // un poco de separación
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Powered by ',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Image.asset('assets/images/q_powered.png', height: 20),
+                const SizedBox(width: 4),
+                Text(
+                  'YaQbit', // Cambia esto por lo que quieras
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color.fromRGBO(
+                      232,
+                      165,
+                      75,
+                      1,
+                    ), // mismo dorado que el botón principal
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -350,19 +443,48 @@ class CafeteriaLogoPainter extends CustomPainter {
     tablePath.lineTo(size.width * 0.8, size.height * 0.95);
     canvas.drawPath(tablePath, paint);
 
-    canvas.drawOval(Rect.fromLTWH(size.width * 0.25, size.height * 0.45, 20, 20), paint);
-    canvas.drawOval(Rect.fromLTWH(size.width * 0.5, size.height * 0.4, 22, 22), paint);
+    canvas.drawOval(
+      Rect.fromLTWH(size.width * 0.25, size.height * 0.45, 20, 20),
+      paint,
+    );
+    canvas.drawOval(
+      Rect.fromLTWH(size.width * 0.5, size.height * 0.4, 22, 22),
+      paint,
+    );
 
-    final vaporPaint = Paint()..color = const Color(0xFF9E9E9E)..style = PaintingStyle.stroke..strokeWidth = 1.5;
+    final vaporPaint = Paint()
+      ..color = const Color(0xFF9E9E9E)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
     final vaporPath = Path();
     vaporPath.moveTo(size.width * 0.55, size.height * 0.35);
-    vaporPath.quadraticBezierTo(size.width * 0.52, size.height * 0.25, size.width * 0.55, size.height * 0.15);
+    vaporPath.quadraticBezierTo(
+      size.width * 0.52,
+      size.height * 0.25,
+      size.width * 0.55,
+      size.height * 0.15,
+    );
     canvas.drawPath(vaporPath, vaporPaint);
 
-    final plantPaint = Paint()..color = const Color(0xFF4CAF50)..style = PaintingStyle.stroke..strokeWidth = 2;
-    canvas.drawLine(Offset(size.width * 0.75, size.height * 0.45), Offset(size.width * 0.75, size.height * 0.25), plantPaint);
-    canvas.drawCircle(Offset(size.width * 0.72, size.height * 0.2), 5, plantPaint..style = PaintingStyle.fill);
-    canvas.drawCircle(Offset(size.width * 0.78, size.height * 0.22), 4, plantPaint);
+    final plantPaint = Paint()
+      ..color = const Color(0xFF4CAF50)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    canvas.drawLine(
+      Offset(size.width * 0.75, size.height * 0.45),
+      Offset(size.width * 0.75, size.height * 0.25),
+      plantPaint,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.72, size.height * 0.2),
+      5,
+      plantPaint..style = PaintingStyle.fill,
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.78, size.height * 0.22),
+      4,
+      plantPaint,
+    );
   }
 
   @override
