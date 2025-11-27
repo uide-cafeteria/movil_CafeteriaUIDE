@@ -5,12 +5,17 @@ import '../ui/screens/login_screen.dart';
 import '../ui/pages/main_screen.dart'; // Esta será el home después del login
 
 class AppRoutes {
-  static const initialRoute = '/login';
+  static const initialRoute = '/home';
 
   static final Map<String, WidgetBuilder> routes = {
-    '/login': (_) => const LoginScreen(),
+    
     '/main': (_) => const MainScreen(),
-    '/home': (_) => const MainScreen()
+    '/home': (_) => const MainScreen(),
+    '/login': (_) => const LoginScreen(),
+    '/promotions': (_) => Scaffold(
+      appBar: AppBar(title: const Text('Promotions')),
+      body: const Center(child: Text('Promotions')),
+    ),
 
   };
 }

@@ -11,40 +11,40 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();        // AÑADIDO
   bool _loading = false;
+  bool _obscurePassword = true;                          // AÑADIDO
 
   void _loginWithEmail() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  final email = _emailCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
 
-  // (Opcional) Validación simple: solo correos de la UIDE
-  if (!email.endsWith("@uide.edu.ec")) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Solo se permiten correos institucionales @uide.edu.ec'),
-        backgroundColor: Colors.redAccent,
-      ),
-    );
-    return;
+    // (Opcional) Validación simple: solo correos de la UIDE
+    if (!email.endsWith("@uide.edu.ec")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Solo se permiten correos institucionales @uide.edu.ec'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _loading = true);
+
+    // Simulación de autenticación
+    await Future.delayed(const Duration(seconds: 1));
+
+    setState(() => _loading = false);
+
+    // TODO: Guardar sesión luego con secureStorage
+
+    // Ir al Home
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
-  setState(() => _loading = true);
-
-  // Simulación de autenticación
-  await Future.delayed(const Duration(seconds: 1));
-
-  setState(() => _loading = false);
-
-  // TODO: Guardar sesión luego con secureStorage
-
-  // 🚀 Ir al Home
-  Navigator.pushReplacementNamed(context, '/home');
-}
-
-
   void _loginWithGoogle() {
-    // Implementar login con Google
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Login con Google próximamente'),
@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        // Fondo degradado beige
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -77,27 +76,15 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   const SizedBox(height: 40),
-
-                  // Logo La Cafetería
                   _buildLogo(),
-
                   const SizedBox(height: 40),
-
-                  // Tarjeta de login
                   _buildLoginCard(),
-
                   const SizedBox(height: 40),
-
-                  // Términos y condiciones
                   const Text(
                     'Al continuar, aceptas nuestros términos y condiciones',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF8B7355),
-                    ),
+                    style: TextStyle(fontSize: 12, color: Color(0xFF8B7355)),
                     textAlign: TextAlign.center,
                   ),
-
                   const SizedBox(height: 20),
                 ],
               ),
@@ -111,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLogo() {
     return Column(
       children: [
-        // Ilustración de la mesa con tazas
         Container(
           width: 120,
           height: 80,
@@ -124,18 +110,16 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        // Texto "La Cafetería"
         const Text(
           'La Cafetería',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w600,
-            fontFamily: 'Pacifico', // Usa una fuente cursiva similar
+            fontFamily: 'Pacifico',
             color: Color(0xFF3D3D3D),
           ),
         ),
         const SizedBox(height: 4),
-        // Subtítulo
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
@@ -176,7 +160,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Título
             const Text(
               'Iniciar Sesión',
               style: TextStyle(
@@ -188,7 +171,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 24),
 
-            // Botón Google
             OutlinedButton(
               onPressed: _loginWithGoogle,
               style: OutlinedButton.styleFrom(
@@ -201,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Google Icon
                   Image.network(
                     'https://www.google.com/favicon.ico',
                     width: 20,
@@ -227,31 +208,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
             const SizedBox(height: 20),
 
-            // Separador "o"
             Row(
               children: [
-                Expanded(
-                  child: Container(
-                    height: 1,
-                    color: const Color(0xFFE0E0E0),
-                  ),
-                ),
+                Expanded(child: Container(height: 1, color: const Color(0xFFE0E0E0))),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'o',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF9E9E9E),
-                    ),
-                  ),
+                  child: Text('o', style: TextStyle(fontSize: 14, color: Color(0xFF9E9E9E))),
                 ),
-                Expanded(
-                  child: Container(
-                    height: 1,
-                    color: const Color(0xFFE0E0E0),
-                  ),
-                ),
+                Expanded(child: Container(height: 1, color: const Color(0xFFE0E0E0))),
               ],
             ),
 
@@ -276,25 +240,49 @@ class _LoginScreenState extends State<LoginScreen> {
               validator: Validators.emailValidator,
               decoration: InputDecoration(
                 hintText: 'correo@correo.com',
-                hintStyle: const TextStyle(
-                  color: Color(0xFFBDBDBD),
+                hintStyle: const TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
+                prefixIcon: const Icon(Icons.mail_outline, color: Color(0xFF9E9E9E), size: 20),
+                filled: true,
+                fillColor: const Color(0xFFF5F5F5),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
+            ),
+
+            // CAMPO DE CONTRASEÑA AÑADIDO AQUÍ
+            const SizedBox(height: 16),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Contraseña',
+                style: TextStyle(
                   fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF3D3D3D),
                 ),
-                prefixIcon: const Icon(
-                  Icons.mail_outline,
-                  color: Color(0xFF9E9E9E),
-                  size: 20,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _passwordCtrl,
+              obscureText: _obscurePassword,
+              validator: (value) {
+                if (value == null || value.isEmpty) return 'Ingresa tu contraseña';
+                if (value.length < 6) return 'Mínimo 6 caracteres';
+                return null;
+              },
+              decoration: InputDecoration(
+                hintText: '••••••••',
+                hintStyle: const TextStyle(color: Color(0xFFBDBDBD), fontSize: 14),
+                prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF9E9E9E), size: 20),
+                suffixIcon: IconButton(
+                  icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                 ),
                 filled: true,
                 fillColor: const Color(0xFFF5F5F5),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               ),
             ),
 
@@ -309,69 +297,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: const Color(0xFFE8A54B),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   elevation: 0,
                 ),
                 child: _loading
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'Continuar con correo',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : const Text('Continuar con correo', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
               ),
             ),
 
             const SizedBox(height: 20),
 
-            // Link "¿No tienes cuenta? Regístrate"
             TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
+              onPressed: () => Navigator.pushNamed(context, '/register'),
               child: RichText(
                 text: const TextSpan(
                   style: TextStyle(fontSize: 14),
                   children: [
-                    TextSpan(
-                      text: '¿No tienes cuenta? ',
-                      style: TextStyle(color: Color(0xFF2196F3)),
-                    ),
-                    TextSpan(
-                      text: 'Regístrate',
-                      style: TextStyle(
-                        color: Color(0xFF2196F3),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    TextSpan(text: '¿No tienes cuenta? ', style: TextStyle(color: Color(0xFF2196F3))),
+                    TextSpan(text: 'Regístrate', style: TextStyle(color: Color(0xFF2196F3), fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
             ),
 
-            // Link "¿Olvidaste tu contraseña?"
             TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/forgot-password');
-              },
-              child: const Text(
-                '¿Olvidaste tu contraseña?',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF757575),
-                ),
-              ),
+              onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
+              child: const Text('¿Olvidaste tu contraseña?', style: TextStyle(fontSize: 14, color: Color(0xFF757575))),
             ),
           ],
         ),
@@ -380,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 }
 
-// Painter personalizado para el logo de la cafetería
+// El painter del logo queda exactamente igual
 class CafeteriaLogoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -389,7 +341,6 @@ class CafeteriaLogoPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    // Mesa
     final tablePath = Path();
     tablePath.moveTo(size.width * 0.2, size.height * 0.7);
     tablePath.lineTo(size.width * 0.8, size.height * 0.7);
@@ -399,55 +350,19 @@ class CafeteriaLogoPainter extends CustomPainter {
     tablePath.lineTo(size.width * 0.8, size.height * 0.95);
     canvas.drawPath(tablePath, paint);
 
-    // Taza izquierda
-    canvas.drawOval(
-      Rect.fromLTWH(size.width * 0.25, size.height * 0.45, 20, 20),
-      paint,
-    );
+    canvas.drawOval(Rect.fromLTWH(size.width * 0.25, size.height * 0.45, 20, 20), paint);
+    canvas.drawOval(Rect.fromLTWH(size.width * 0.5, size.height * 0.4, 22, 22), paint);
 
-    // Taza derecha con vapor
-    canvas.drawOval(
-      Rect.fromLTWH(size.width * 0.5, size.height * 0.4, 22, 22),
-      paint,
-    );
-
-    // Vapor
-    final vaporPaint = Paint()
-      ..color = const Color(0xFF9E9E9E)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5;
-
+    final vaporPaint = Paint()..color = const Color(0xFF9E9E9E)..style = PaintingStyle.stroke..strokeWidth = 1.5;
     final vaporPath = Path();
     vaporPath.moveTo(size.width * 0.55, size.height * 0.35);
-    vaporPath.quadraticBezierTo(
-      size.width * 0.52,
-      size.height * 0.25,
-      size.width * 0.55,
-      size.height * 0.15,
-    );
+    vaporPath.quadraticBezierTo(size.width * 0.52, size.height * 0.25, size.width * 0.55, size.height * 0.15);
     canvas.drawPath(vaporPath, vaporPaint);
 
-    // Planta
-    final plantPaint = Paint()
-      ..color = const Color(0xFF4CAF50)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-
-    canvas.drawLine(
-      Offset(size.width * 0.75, size.height * 0.45),
-      Offset(size.width * 0.75, size.height * 0.25),
-      plantPaint,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.72, size.height * 0.2),
-      5,
-      plantPaint..style = PaintingStyle.fill,
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.78, size.height * 0.22),
-      4,
-      plantPaint,
-    );
+    final plantPaint = Paint()..color = const Color(0xFF4CAF50)..style = PaintingStyle.stroke..strokeWidth = 2;
+    canvas.drawLine(Offset(size.width * 0.75, size.height * 0.45), Offset(size.width * 0.75, size.height * 0.25), plantPaint);
+    canvas.drawCircle(Offset(size.width * 0.72, size.height * 0.2), 5, plantPaint..style = PaintingStyle.fill);
+    canvas.drawCircle(Offset(size.width * 0.78, size.height * 0.22), 4, plantPaint);
   }
 
   @override

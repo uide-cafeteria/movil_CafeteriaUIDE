@@ -1,11 +1,11 @@
-// lib/pages/promotions_page.dart
+// lib/pages/customer_promotions_page.dart
 import 'package:flutter/material.dart';
 import '../../models/promotion.dart';
 import '../../services/cafeteria_services.dart';
 import '../../config/app_theme.dart';
 
-class PromotionsPage extends StatelessWidget {
-  const PromotionsPage({super.key});
+class CustomerPromotionsPage extends StatelessWidget {
+  const CustomerPromotionsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class PromotionsPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Ofertas y Promociones',
+          'Ofertas del Día',
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.bold,
@@ -36,7 +36,7 @@ class PromotionsPage extends StatelessWidget {
       ),
       body: activePromotions.isEmpty
           ? _buildEmptyState()
-          : _buildPromotionsList(activePromotions),
+          : _buildPromotionsGrid(activePromotions),
     );
   }
 
@@ -52,23 +52,29 @@ class PromotionsPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           const Text(
-            'No hay ofertas activas',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+            '¡Sin ofertas por ahora!',
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
           Text(
-            '¡Vuelve pronto! Aquí aparecerán las mejores promociones',
-            textAlign: TextAlign.center,
+            'Vuelve más tarde, siempre hay sorpresas',
             style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            textAlign: TextAlign.center,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPromotionsList(List<Promotion> promotions) {
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+  Widget _buildPromotionsGrid(List<Promotion> promotions) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 1,
+        childAspectRatio: 1.45,
+        mainAxisSpacing: 20,
+        // crossAxisSpacing: 16,
+      ),
       itemCount: promotions.length,
       itemBuilder: (context, index) {
         final promo = promotions[index];
@@ -79,38 +85,34 @@ class PromotionsPage extends StatelessWidget {
 
   Widget _buildPromotionCard(Promotion promo) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      height: 240,
-      width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(24),
         child: Stack(
+          fit: StackFit.expand,
           children: [
             // Imagen de fondo
             Image.asset(
               promo.image.isNotEmpty
                   ? promo.image
                   : 'assets/images/promo_cafe.jpg',
-              width: double.infinity,
-              height: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
                 color: Colors.grey[300],
-                child: const Icon(Icons.restaurant_menu, size: 70, color: Colors.white70),
+                child: const Icon(Icons.local_dining, size: 60, color: Colors.white70),
               ),
             ),
 
-            // Degradado oscuro
+            // Degradado
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -118,23 +120,23 @@ class PromotionsPage extends StatelessWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.8),
+                    Colors.black.withOpacity(0.85),
                   ],
-                  stops: const [0.4, 1.0],
+                  stops: const [0.3, 1.0],
                 ),
               ),
             ),
 
             // Contenido
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Badge de descuento
+                  // Badge descuento
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
                       color: AppTheme.accentColor,
                       borderRadius: BorderRadius.circular(30),
@@ -143,25 +145,22 @@ class PromotionsPage extends StatelessWidget {
                       '-${promo.discountPercentage.toInt()}%',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
                   // Título
                   Text(
                     promo.title,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
-                      height: 1.2,
-                      shadows: [
-                        Shadow(blurRadius: 10, color: Colors.black45, offset: Offset(0, 4)),
-                      ],
+                      height: 1.1,
                     ),
                   ),
 
@@ -171,26 +170,25 @@ class PromotionsPage extends StatelessWidget {
                       promo.description,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
-                        height: 1.4,
+                        fontSize: 15,
                       ),
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
-                  // Fecha de validez
+                  // Fecha
                   Row(
                     children: [
-                      const Icon(Icons.access_time_filled, size: 18, color: Colors.white70),
+                      const Icon(Icons.calendar_today, size: 16, color: Colors.white70),
                       const SizedBox(width: 8),
                       Text(
-                        'Válida hasta el ${promo.endDate.day} de ${_monthName(promo.endDate.month)}',
+                        'Hasta ${promo.endDate.day}/${_formatMonth(promo.endDate.month)}',
                         style: const TextStyle(
                           color: Colors.white70,
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -205,10 +203,10 @@ class PromotionsPage extends StatelessWidget {
     );
   }
 
-  String _monthName(int month) {
+  String _formatMonth(int month) {
     const months = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      'ene', 'feb', 'mar', 'abr', 'may', 'jun',
+      'jul', 'ago', 'sep', 'oct', 'nov', 'dic'
     ];
     return months[month - 1];
   }
