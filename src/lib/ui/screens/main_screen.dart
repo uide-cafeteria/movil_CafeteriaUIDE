@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'promotions_page.dart';
+import '../pages/home_page.dart';
+import '../pages/promotions_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,10 +12,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    PromotionsPage(),
-  ];
+  final List<Widget> _pages = const [HomePage(), PromotionsPage()];
 
   @override
   Widget build(BuildContext context) {
