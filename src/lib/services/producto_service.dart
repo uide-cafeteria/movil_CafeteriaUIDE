@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/producto.dart';
 
 class ProductoService {
-  // CAMBIA ESTO SEGÚN TU CASO
-  static const String _baseUrl = "http://localhost:3001"; // Celular físico
+  static const String _baseUrl = "http://localhost:3001";
 
   Future<List<Producto>> obtenerProductos() async {
     final url = Uri.parse("$_baseUrl/api/producto/mostrar");
@@ -15,14 +14,12 @@ class ProductoService {
           .timeout(const Duration(seconds: 15));
 
       print("Status: ${response.statusCode}");
-      print(
-        "Respuesta: ${response.body}",
-      ); // Para que veas exactamente qué llega
+      print("Respuesta: ${response.body}"); // Para Depuración
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
-        // AQUÍ ESTÁ LA CLAVE: buscamos la lista dentro del objeto
+        // buscamos la lista dentro del objeto
         List<dynamic> listaProductos = [];
 
         if (jsonResponse['data'] is List) {
@@ -32,7 +29,6 @@ class ProductoService {
         } else if (jsonResponse['result'] is List) {
           listaProductos = jsonResponse['result'];
         } else {
-          // Si el backend devuelve directamente la lista (raro pero posible)
           if (jsonResponse is List) {
             listaProductos = jsonResponse as List;
           }

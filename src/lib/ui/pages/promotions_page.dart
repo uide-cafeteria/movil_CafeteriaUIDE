@@ -29,10 +29,6 @@ class PromotionsPage extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: activePromotions.isEmpty
           ? _buildEmptyState()
@@ -45,11 +41,7 @@ class PromotionsPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.local_offer_outlined,
-            size: 100,
-            color: Colors.grey[400],
-          ),
+          Icon(Icons.local_offer_outlined, size: 100, color: Colors.grey[400]),
           const SizedBox(height: 24),
           const Text(
             'No hay ofertas activas',
@@ -106,7 +98,11 @@ class PromotionsPage extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (_, __, ___) => Container(
                 color: Colors.grey[300],
-                child: const Icon(Icons.restaurant_menu, size: 70, color: Colors.white70),
+                child: const Icon(
+                  Icons.restaurant_menu,
+                  size: 70,
+                  color: Colors.white70,
+                ),
               ),
             ),
 
@@ -116,10 +112,7 @@ class PromotionsPage extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.8),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
                   stops: const [0.4, 1.0],
                 ),
               ),
@@ -134,7 +127,10 @@ class PromotionsPage extends StatelessWidget {
                 children: [
                   // Badge de descuento
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.accentColor,
                       borderRadius: BorderRadius.circular(30),
@@ -160,7 +156,11 @@ class PromotionsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                       shadows: [
-                        Shadow(blurRadius: 10, color: Colors.black45, offset: Offset(0, 4)),
+                        Shadow(
+                          blurRadius: 10,
+                          color: Colors.black45,
+                          offset: Offset(0, 4),
+                        ),
                       ],
                     ),
                   ),
@@ -184,7 +184,11 @@ class PromotionsPage extends StatelessWidget {
                   // Fecha de validez
                   Row(
                     children: [
-                      const Icon(Icons.access_time_filled, size: 18, color: Colors.white70),
+                      const Icon(
+                        Icons.access_time_filled,
+                        size: 18,
+                        color: Colors.white70,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Válida hasta el ${promo.endDate.day} de ${_monthName(promo.endDate.month)}',
@@ -207,8 +211,18 @@ class PromotionsPage extends StatelessWidget {
 
   String _monthName(int month) {
     const months = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre',
     ];
     return months[month - 1];
   }
