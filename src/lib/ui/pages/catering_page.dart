@@ -11,32 +11,27 @@ class CateringPage extends StatefulWidget {
 class _CateringPageState extends State<CateringPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController numPeopleCtrl = TextEditingController();
-  final TextEditingController commentsCtrl = TextEditingController();
+  // Controllers
+  final TextEditingController nameCtrl = TextEditingController();
+  final TextEditingController emailCtrl = TextEditingController();
+  final TextEditingController phoneCtrl = TextEditingController();
+  final TextEditingController peopleCtrl = TextEditingController();
+  final TextEditingController descriptionCtrl = TextEditingController();
 
-  String? selectedDish;
-  String? selectedDecoration;
+  String? selectedEventType;
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
 
-  final List<Map<String, String>> dishes = [
-    {'value': 'ejecutivo', 'label': 'Menú Ejecutivo'},
-    {'value': 'vegetariano', 'label': 'Menú Vegetariano'},
-    {'value': 'vegano', 'label': 'Menú Vegano'},
-    {'value': 'sandwiches', 'label': 'Sandwiches Gourmet'},
-    {'value': 'buffet', 'label': 'Almuerzo Buffet'},
-  ];
-
-  final List<Map<String, String>> decorations = [
-    {'value': 'ninguna', 'label': 'Sin decoración'},
-    {'value': 'formal', 'label': 'Formal'},
-    {'value': 'cumpleanos', 'label': 'Cumpleaños'},
-    {'value': 'institucional', 'label': 'Evento Institucional'},
-    {'value': 'personalizada', 'label': 'Personalizada'},
+  final List<String> eventTypes = [
+    'Evento institucional',
+    'Reunión académica',
+    'Capacitación',
+    'Cumpleaños',
+    'Otro',
   ];
 
   Future<void> pickDate() async {
-    final now = DateTime.now().add(const Duration(days: 2));
+    final now = DateTime.now().add(const Duration(days: 1));
     final date = await showDatePicker(
       context: context,
       initialDate: now,
@@ -59,14 +54,18 @@ class _CateringPageState extends State<CateringPage> {
   }
 
   void submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Aquí luego conectas Firebase / API
-      debugPrint('Personas: ${numPeopleCtrl.text}');
-      debugPrint('Plato: $selectedDish');
+    if (_formKey.currentState!.validate() &&
+        selectedDate != null &&
+        selectedTime != null) {
+      // Aquí luego conectas API / Backend
+      debugPrint('Nombre: ${nameCtrl.text}');
+      debugPrint('Correo: ${emailCtrl.text}');
+      debugPrint('Teléfono: ${phoneCtrl.text}');
+      debugPrint('Tipo evento: $selectedEventType');
+      debugPrint('Personas: ${peopleCtrl.text}');
       debugPrint('Fecha: $selectedDate');
       debugPrint('Hora: $selectedTime');
-      debugPrint('Decoración: $selectedDecoration');
-      debugPrint('Comentarios: ${commentsCtrl.text}');
+      debugPrint('Descripción: ${descriptionCtrl.text}');
 
       Navigator.pushReplacement(
         context,
@@ -93,31 +92,55 @@ class _CateringPageState extends State<CateringPage> {
             children: [
               _card(
                 child: TextFormField(
-                  controller: numPeopleCtrl,
-                  keyboardType: TextInputType.number,
+                  controller: nameCtrl,
                   decoration: const InputDecoration(
-                    labelText: 'Número de personas',
-                    hintText: 'Mínimo 10',
+                    labelText: 'Nombre completo',
                   ),
                   validator: (v) =>
-                      v == null || int.tryParse(v) == null || int.parse(v) < 10
-                      ? 'Mínimo 10 personas'
-                      : null,
+                      v == null || v.isEmpty ? 'Campo obligatorio' : null,
+                ),
+              ),
+              _card(
+                child: TextFormField(
+                  controller: emailCtrl,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(labelText: 'Correo'),
+                  validator: (v) =>
+                      v == null || !v.contains('@') ? 'Correo inválido' : null,
+                ),
+              ),
+              _card(
+                child: TextFormField(
+                  controller: phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(labelText: 'Teléfono'),
+                  validator: (v) =>
+                      v == null || v.length < 7 ? 'Teléfono inválido' : null,
                 ),
               ),
               _card(
                 child: DropdownButtonFormField(
-                  decoration: const InputDecoration(labelText: 'Menú a servir'),
-                  items: dishes
-                      .map(
-                        (d) => DropdownMenuItem(
-                          value: d['value'],
-                          child: Text(d['label']!),
-                        ),
-                      )
+                  decoration: const InputDecoration(
+                    labelText: 'Tipo de evento',
+                  ),
+                  items: eventTypes
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                       .toList(),
-                  onChanged: (v) => selectedDish = v,
-                  validator: (v) => v == null ? 'Selecciona un menú' : null,
+                  onChanged: (v) => selectedEventType = v,
+                  validator: (v) =>
+                      v == null ? 'Selecciona un tipo de evento' : null,
+                ),
+              ),
+              _card(
+                child: TextFormField(
+                  controller: peopleCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Cantidad de personas',
+                  ),
+                  validator: (v) => v == null || int.tryParse(v) == null
+                      ? 'Número inválido'
+                      : null,
                 ),
               ),
               Row(
@@ -152,33 +175,18 @@ class _CateringPageState extends State<CateringPage> {
                 ],
               ),
               _card(
-                child: DropdownButtonFormField(
-                  decoration: const InputDecoration(labelText: 'Decoración'),
-                  items: decorations
-                      .map(
-                        (d) => DropdownMenuItem(
-                          value: d['value'],
-                          child: Text(d['label']!),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) => selectedDecoration = v,
-                  validator: (v) => v == null ? 'Selecciona una opción' : null,
-                ),
-              ),
-              _card(
                 child: TextFormField(
-                  controller: commentsCtrl,
+                  controller: descriptionCtrl,
                   maxLines: 4,
                   decoration: const InputDecoration(
-                    labelText: 'Comentarios adicionales',
+                    labelText: 'Descripción / requerimientos',
                   ),
                 ),
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 icon: const Icon(Icons.send),
-                label: const Text('Solicitar Catering'),
+                label: const Text('Enviar solicitud'),
                 onPressed: submitForm,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
