@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
 
   bool _isLoggedIn = false;
   String _userName = "Invitado";
+  String _codigoUnico = "";
   bool _isLoadingUser = true;
 
   // Para los productos
@@ -43,17 +44,20 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadUserData() async {
     final token = await SecureStorage.getToken();
     final name = await SecureStorage.getUserName();
+    final codigoUnico = await SecureStorage.getCodigoUnico();
 
     if (token != null && name != null) {
       setState(() {
         _isLoggedIn = true;
         _userName = name;
+        _codigoUnico = codigoUnico ?? "";
         _isLoadingUser = false;
       });
     } else {
       setState(() {
         _isLoggedIn = false;
         _userName = "Invitado";
+        _codigoUnico = "";
         _isLoadingUser = false;
       });
     }
@@ -81,6 +85,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isLoggedIn = false;
       _userName = "Invitado";
+      _codigoUnico = "";
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -108,7 +113,7 @@ class _HomePageState extends State<HomePage> {
               elevation: 0,
               floating: true,
               pinned: false,
-              expandedHeight: 100,
+              expandedHeight: 120,
               flexibleSpace: FlexibleSpaceBar(
                 background: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
@@ -127,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const SizedBox(height: 4),
+                          // MUESTRA EL NOMBRE DEL USUARIO
                           Text(
                             _isLoadingUser
                                 ? 'Cargando...'
@@ -139,6 +145,33 @@ class _HomePageState extends State<HomePage> {
                               color: AppTheme.primaryColor,
                             ),
                           ),
+                          // MUESTRA EL CODIGO UNICO DEL USUARIO
+                          if (_isLoggedIn && _codigoUnico.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "#",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    _codigoUnico,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.grey[600],
+                                      letterSpacing: 1.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                         ],
                       ),
                       PopupMenuButton<String>(

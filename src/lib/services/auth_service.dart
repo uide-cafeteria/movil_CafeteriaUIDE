@@ -24,10 +24,14 @@ class AuthService {
         final data = jsonDecode(response.body);
         final token = data['token'] ?? data['accessToken'];
         final username = data['usuario']['username'];
+        final codigoUnico = data['usuario']['codigoUnico'];
+        final loyaltyToken = data['usuario']['loyalty_token'];
 
         if (token != null) {
           await SecureStorage.saveToken(token);
           await SecureStorage.saveUserName(username);
+          await SecureStorage.saveCodigoUnico(codigoUnico);
+          await SecureStorage.saveLoyaltyToken(loyaltyToken);
           return {"success": true, "data": data};
         }
       }
